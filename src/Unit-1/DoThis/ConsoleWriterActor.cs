@@ -3,10 +3,6 @@ using Akka.Actor;
 
 namespace WinTail
 {
-    /// <summary>
-    /// Actor responsible for serializing message writes to the console.
-    /// (write one message at a time, champ :)
-    /// </summary>
     class ConsoleWriterActor : UntypedActor
     {
         protected override void OnReceive(object message)
@@ -16,9 +12,7 @@ namespace WinTail
                 var msg = message as Messages.InputError;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(msg.Reason);
-            
             }
-
             else if (message is Messages.InputSuccess)
             {
                 var msg = message as Messages.InputSuccess;
@@ -29,9 +23,7 @@ namespace WinTail
             {
                 Console.WriteLine(message);
             }
-
             Console.ResetColor();
-
         }
     }
 }
