@@ -1,6 +1,8 @@
 ﻿using System;
 ﻿using Akka.Actor;
 
+
+// F:\akka-bootcamp\src\Unit-1\DoThis\sample_log_file.txt
 namespace WinTail
 {
     #region Program
@@ -12,31 +14,20 @@ namespace WinTail
         {
             MyActorSystem = ActorSystem.Create("MyActorSystem");
             
-            //props + IActorRef for ea Actor
             Props consoleWriterProps = Props.Create<ConsoleWriterActor>();
-            IActorRef consoleWriterActor = MyActorSystem.ActorOf(consoleWriterProps,"consoleWriterActor");
-           
-            //props + IActorRef for ea Actor
-            //Props validationActorProps = Props.Create( () => new ValidatorActor(consoleWriterActor));
-            //IActorRef validationActor = MyActorSystem.ActorOf(validationActorProps, "validationActor");
-            Props tailCoordinatorProps = Props.Create( () => new TailCoordinatorActor());
-            IActorRef tailCoordinatorActor = MyActorSystem.ActorOf(tailCoordinatorProps, "tailCoordinatorProps");
+            IActorRef consoleWriterActor = MyActorSystem.ActorOf(consoleWriterProps, "consoleWriterActor");
 
-            Props fileValidatorActorProps = Props.Create( () => new FileValidatorActor(consoleWriterActor, tailCoordinatorActor));
-            IActorRef validationActor = MyActorSystem.ActorOf(fileValidatorActorProps,
-                "validationActor");
-            //props + IActorRef for ea Actor
-            Props consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
-            IActorRef consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps,"consoleReaderActor");
+            Props tailCoordinatorProps = Props.Create(() => new TailCoordinatorActor());
+            IActorRef tailCoordinatorActor = MyActorSystem.ActorOf(tailCoordinatorProps, "tailCoordinatorActor");
+
+            Props fileValidatorActorProps = Props.Create(() => new FileValidatorActor(consoleWriterActor));
+            IActorRef fileValidatorActor = MyActorSystem.ActorOf(fileValidatorActorProps, "validationActor");
+            
+            Props consoleReaderProps = Props.Create<ConsoleReaderActor>();
+            IActorRef consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps, "consoleReaderActor");
 
             
-
-            
-            
-
             consoleReaderActor.Tell(ConsoleReaderActor.StartCommand);
-
-            consoleReaderActor.Tell(new Messages.ContinueProcessing());
 
             MyActorSystem.WhenTerminated.Wait();
         }
