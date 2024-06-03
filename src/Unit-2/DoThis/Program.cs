@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Akka.Actor;
 using Akka.Configuration;
+using ChartApp.Actors;
 
 namespace ChartApp
 {
