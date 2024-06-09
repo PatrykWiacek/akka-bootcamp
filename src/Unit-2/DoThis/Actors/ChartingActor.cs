@@ -20,6 +20,9 @@ namespace ChartApp.Actors
             public Dictionary<string, Series> InitialSeries { get; private set; }
         }
 
+        /// <summary>
+        /// Add a new <see cref="Series"/> to the chart
+        /// </summary>
         public class AddSeries
         {
             public AddSeries(Series series)
@@ -48,16 +51,6 @@ namespace ChartApp.Actors
             Receive<AddSeries>(addSeries => HandleAddSeries(addSeries));
         }
 
-        private void HandleAddSeries(AddSeries series)
-        {
-
-            if (!string.IsNullOrEmpty(series.Series.Name) && !_seriesIndex.ContainsKey(series.Series.Name))
-            {
-                _seriesIndex.Add(series.Series.Name, series.Series);
-                _chart.Series.Add(series.Series);
-            }
-        }
-
         #region Individual Message Type Handlers
 
         private void HandleInitialize(InitializeChart ic)
@@ -80,6 +73,15 @@ namespace ChartApp.Actors
                     series.Value.Name = series.Key;
                     _chart.Series.Add(series.Value);
                 }
+            }
+        }
+
+        private void HandleAddSeries(AddSeries series)
+        {
+            if(!string.IsNullOrEmpty(series.Series.Name) && !_seriesIndex.ContainsKey(series.Series.Name))
+            {
+                _seriesIndex.Add(series.Series.Name, series.Series);
+                _chart.Series.Add(series.Series);
             }
         }
 
